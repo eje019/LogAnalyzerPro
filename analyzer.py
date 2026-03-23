@@ -30,7 +30,22 @@ for fichier in fichiers_log:
         lignes = f.readlines() #on lit toutes les lignes du fichier
         # total_lignes = total_lignes + len(lignes) #on ajoute le nombre de lignes au total
 
-        print(fichier, "contient", len(lignes), "lignes") #on dit ce fichier contient combien de lignes d'abord
 
+        # gestion des filtres pour les niveaux
+        for ligne in f:
+            total_lignes = total_lignes + 1
+
+            # on check ce que la ligne contient 
+            if "INFO" in ligne:
+                compte_INFO = compte_INFO + 1
+            elif "WARN" in ligne:
+                compte_WARN = compte_WARN + 1
+            elif "ERROR" in ligne:
+                compte_ERROR = compte_ERROR + 1
+        # print(fichier, "contient", len(lignes), "lignes") #on dit ce fichier contient combien de lignes d'abord
+
+print("----Resultats----")
 print("Total de toutes les lignes :", total_lignes) #on affiche le nombre total en general
-
+print("INFO :", compte_INFO)
+print("ERROR :", compte_ERROR)
+print("WARN :", compte_WARN)
