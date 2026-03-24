@@ -1,0 +1,35 @@
+{
+    "metadata": {
+        "date": "2026-03-24 10:49:19",
+        "utilisateur": "rebec",
+        "os": "Windows 11",
+        "source": "D:\\LogAnalyzerPro\\logs_test"
+    },
+    "statistiques": {
+        "total_lignes": 27,
+        "par_niveau": {
+            "ERROR": 6,
+            "WARN": 6,
+            "INFO": 15
+        },
+        "top5_erreurs": [
+            {
+                "message": "Fin de la tâche",
+                "occurrences": 1
+            },
+            {
+                "message": "Service web arrêté",
+                "occurrences": 1
+            },
+            {
+                "message": "Connexion bancaire instable",
+                "occurrences": 1
+            }
+        ]
+    },
+    "fichiers_traites": [
+        "./logs_test\\app1.log",
+        "./logs_test\\app2.log",
+        "./logs_test\\app3.log"
+    ]
+}

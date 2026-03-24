@@ -115,3 +115,10 @@ if top5:
         print(f"{i}. {message} ({count} fois)")
 else:
     print("Aucune erreur trouvée")
+
+import rapport
+contenu_rapport = rapport.construire_rapport(
+    total_lignes, compte_INFO, compte_WARN, compte_ERROR,
+    top5, fichiers_log, args.source
+)
+rapport.generer_rapport_json(contenu_rapport, dossier_rapports="rapports")
