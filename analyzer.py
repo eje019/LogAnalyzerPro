@@ -1,5 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import argparse
 import glob
+
+import platform
+import os
 print("\n")
 print("Bonjour je suis l'analyseur de LOGS")
 
@@ -15,6 +21,10 @@ analyseur.add_argument("--niveau", default="ALL")
 # recuperation des arguments tapés par user; stockees dans l'objet args
 # acces via args.source et args.niveau
 args = analyseur.parse_args()
+
+# Détection pour les métadonnées (conformément au TP)
+utilisateur = os.environ.get("USER") or os.environ.get("USERNAME") or "inconnu"
+systeme = platform.system() + " " + platform.release()
 
 # recherche de tous les fichiers .log dans le dossier source
 fichiers_log = glob.glob(args.source + "/*.log")

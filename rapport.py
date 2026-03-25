@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 #Module 2 — Génération du Rapport JSON.
 #Ce module prend les statistiques calculées par analyser.py

@@ -13,76 +13,130 @@ Développé entièrement avec la bibliothèque standard Python, cette pipeline p
 - **Dépendances :** Bibliotheque standard (aucune externe) : `os`, `sys`, `json`, `shutil`, `argparse`, `tarfile`, `subprocess`, `platform`, `glob`.
 **Installation :**
 git clone https://github.com/eje019/LogAnalyzerPro.git
+
 cd LogAnalyzerPro
+
 chmod +x main.py
 
 
 
 
 ## Utilisation et commandes :
-# Analyse simple de tous les logs dans le dossier de test
-python main.py --source ./logs_test
 
-# Analyse filtrée sur les erreurs avec nettoyage des rapports de plus de 7 jours
-python3 main.py --source ./logs_test --niveau ERROR --retention 7
+Toutes les commandes s'exécutent depuis le terminal, à la racine du projet.
 
-## 
-Le script s'exécute via la console. Voici les arguments supportés :
+### 1- Analyse simple de tous les logs dans le dossier de test :
+python main.py --source logs_test
 
---source (Obligatoire) : Spécifie le chemin vers le dossier contenant les fichiers .log à analyser.
-
---niveau (Optionnel) : Définit le niveau de filtrage des logs. Les options acceptées sont ERROR, WARN, INFO ou ALL. Par défaut, le script analyse tous les niveaux (ALL).
-
---dest (Optionnel) : Indique le dossier de destination pour le stockage des archives .tar.gz. Par défaut, les archives sont placées dans le dossier ./backups.
-
---retention (Optionnel) : Détermine la politique de conservation en nombre de jours avant la suppression automatique des anciens rapports JSON. La valeur par défaut est fixée à 30 jours.
+**Explication** : Analyse tous les fichiers .log du dossier `logs_test` sans filtrage. Les rapports sont sauvegardés dans `rapports/` et les archives dans `backups/`.
 
 
-# Structure du Répertoire
+### 2- Analyse en filtrant uniquement les erreurs
+python main.py --source logs_test --niveau ERROR
 
-loganalyzer/
-├── main.py             # Point d'entrée principal
-├── analyser.py         # Module d'ingestion et analyse (Stats & Filtres)
-├── rapport.py          # Module de génération JSON
-├── archiver.py         # Module d'archivage et de nettoyage
-├── logs_test/          # 3 fichiers de logs (min. 20 lignes chacun)
-├── rapports/           # Dossier cible des rapports JSON (auto-généré)
-├── backups/            # Dossier cible des archives .tar.gz (auto-généré)
-└── README.md           # Documentation technique
+**Explication** : Ne compte et n'affiche que les lignes contenant "ERROR". Utile pour voir rapidement les problèmes.
 
 
+### 3- Analyse avec dossier de destination personnalisé pour les archives
+python main.py --source logs_test --dest mes_archives
 
-## 6. Planification Automatique (Cron)
-Pour automatiser l'analyse chaque **dimanche à 03h00**, ajoutez cette ligne à votre configuration Cron (`crontab -e`) :
-00 03 * * 0 /usr/bin/python3 /votre/chemin/LogAnalyzerPro/main.py --source /votre/chemin logs--retention 30       
+**Explication** : L'archive compressée (.tar.gz) sera déplacée dans le dossier `mes_archives` au lieu de `backups/`.
 
 
+### 4- Nettoyage automatique des anciens rapports
+python main.py --source logs_test --retention 7
 
-## 5. Spécifications Techniques
+**Explication** : Supprime automatiquement les rapports JSON de plus de 7 jours. Par défaut, la rétention est de 30 jours.
 
-# Structure du Rapport JSON
-Chaque analyse génère un fichier `rapport_YYYY-MM-DD.json` contenant :
-* **metadata** : Date/heure, utilisateur (`os.environ`), OS (`platform`) et chemin source absolu.
-* **statistiques** : Total de lignes, décompte par niveau (`ERROR`, `WARN`, `INFO`) et Top 5 des messages d'erreurs uniques.
-* **fichiers_traites** : Liste exhaustive des fichiers `.log` analysés.
 
-# Sécurité et Robustesse
-* **Espace Disque :** Vérification via la commande système `df` (via `subprocess`) avant tout archivage pour prévenir la saturation.
-* **Chemins Absolus :** Utilisation systématique de `os.path.abspath(__file__)` pour garantir la portabilité du script.
-* **Gestion d'Erreurs :** Utilisation de blocs `try/except` et de `sys.exit(1)` avec messages explicites en cas d'échec critique.
+### 5- Combinaison de tous les arguments
+python main.py --source logs_test --niveau ERROR --dest archives_erreurs --retention 15
+
+**Explication** : Analyse uniquement les erreurs, déplace l'archive dans `archives_erreurs/` et conserve les rapports pendant 15 jours seulement.
 
 
 
 
-## Architecture et Répartition des Rôles (Groupe 4)
-Le projet est structuré en modules indépendants pour garantir une maintenance facile et une séparation des responsabilités :
 
-main.py (Étudiant A – Intégrateur) : Responsable de l'orchestration principale du programme. Il gère le flux logique entre les modules et implémente une gestion robuste des erreurs fatales via sys.exit(1).
+## Description des modules
 
-analyser.py (Étudiant B – Logs & Analyse) : Gère l'ingestion des fichiers, le filtrage par criticité (ERROR, WARN, INFO) et le calcul des statistiques (notamment le Top 5 des erreurs). Responsable également de la création des jeux de données de test.
+Le projet est découpé en 4 fichiers indépendants, chacun ayant une responsabilité précise.
 
-rapport.py (Étudiant C – Données & Rapports) : Dédié à la génération du rapport JSON structuré. Il assure la précision des métadonnées (OS, utilisateur, date) et le respect strict du format imposé.
+### analyser.py — Ingestion et analyse
+**Rôle** : C'est le moteur d'analyse. Il lit les fichiers .log, filtre selon le niveau choisi (INFO, WARN, ERROR, ALL), et calcule les statistiques :
+- Nombre total de lignes
+- Répartition par niveau
+- Top 5 des messages d'erreur les plus fréquents
 
-archiver.py (Étudiant D – Spécialiste Système) : S'occupe de la compression des logs en .tar.gz, du déplacement des archives et de l'implémentation de la politique de rétention. Il effectue le contrôle de l'espace disque avant toute opération.
+**Comment il fonctionne** : Il utilise `glob` pour trouver tous les fichiers .log, puis parcourt chaque ligne. Pour chaque erreur, il stocke le message dans un dictionnaire pour compter ses occurrences. À la fin, il trie les erreurs pour garder les 5 plus fréquentes.
 
-README.md (Étudiant E – Documentation & QA) : Garant de la qualité finale et de la documentation technique. Responsable des tests d'intégration, de la validation des normes de codage (docstrings, shebang) et de la démonstration du projet.
+### rapport.py — Génération du rapport JSON
+**Rôle** : Il transforme les statistiques en un fichier JSON structuré et lisible.
+
+**Comment il fonctionne** : Il prend les données fournies par `analyser.py` (total lignes, compteurs, Top 5) et les associe à des métadonnées (date, utilisateur, système d'exploitation). Le fichier est nommé `rapport_YYYY-MM-DD.json` et sauvegardé dans le dossier `rapports/`.
+
+### archiver.py — Archivage et nettoyage
+**Rôle** : Il gère la compression des logs et la suppression des anciens rapports pour économiser de l'espace disque.
+
+**Comment il fonctionne** :
+- **Archivage** : Compresse tous les fichiers .log dans une archive `backup_YYYY-MM-DD.tar.gz` avec la bibliothèque `tarfile`.
+- **Déplacement** : Déplace l'archive vers le dossier spécifié par `--dest` (ou `backups/` par défaut).
+- **Nettoyage** : Parcourt le dossier `rapports/` et supprime les fichiers JSON plus vieux que le nombre de jours défini par `--retention`.
+- **Vérification** : Avant d'archiver, il vérifie l'espace disque disponible via la commande système `df` (Linux/Mac) ou `wmic` (Windows).
+
+### main.py — Orchestration
+**Rôle** : C'est le chef d'orchestre. Il appelle les trois autres modules dans le bon ordre et gère les erreurs.
+
+**Comment il fonctionne** :
+1. Il récupère les arguments de l'utilisateur (`--source`, `--niveau`, `--dest`, `--retention`)
+2. Il lance `analyser.py` dans un sous-processus
+3. Il appelle `archiver.py` pour compresser les logs et nettoyer les anciens rapports
+4. Si une étape échoue, il affiche un message clair et termine avec `sys.exit(1)`
+
+
+
+## Planification automatique avec Cron
+
+Cron est un outil qui permet d'exécuter des programmes automatiquement à des heures précises, sans intervention humaine.
+
+*la ligne :*
+0 3 * * 0 /usr/bin/python3 /chemin/vers/loganalyzer/main.py --source /chemin/vers/logs --retention 30
+
+
+### Explication de la ligne
+
+| Élément | Signification |
+|---------|---------------|
+| `0 3 * * 0` | **Quand exécuter** : Tous les dimanches à 3h00 du matin |
+| `/usr/bin/python3` | **Quoi** : L'interpréteur Python |
+| `/chemin/vers/loganalyzer/main.py` | **Quel programme** : Notre orchestrateur |
+| `--source /chemin/vers/logs` | **Quel dossier** : L'emplacement des fichiers logs à analyser |
+| `--retention 30` | **Conservation** : Garder les rapports 30 jours |
+
+### Comment installer cette planification
+1. Ouvre le terminal
+2. Tape `crontab -e` (ouvre l'éditeur de Cron)
+3. Ajoute la ligne ci-dessus en adaptant les chemins
+4. Sauvegarde et quitte
+
+### Vérifier que Cron fonctionne
+Cette commande affiche la liste des tâches planifiées.
+
+### Remarque importante
+- Sur Windows, on utilise le **Planificateur de tâches** (Task Scheduler) à la place de Cron
+- Le chemin vers Python peut varier : utilise `which python3` pour le trouver sur Linux/Mac
+
+
+
+
+## Architecture et Répartition des Rôles 
+
+*main.py* (AMOUZOU-ADOUN Nelson – Intégrateur) : Responsable de l'orchestration principale du programme. Il gère le flux logique entre les modules et implémente une gestion robuste des erreurs fatales via sys.exit(1).
+
+*analyser.py* (N'DAYAKE Jean-Paul – Logs & Analyse) : Gère l'ingestion des fichiers, le filtrage par criticité (ERROR, WARN, INFO) et le calcul des statistiques (notamment le Top 5 des erreurs). Responsable également de la création des jeux de données de test.
+
+*rapport.py* (HESSOUH Floriane – Données & Rapports) : Dédié à la génération du rapport JSON structuré. Il assure la précision des métadonnées (OS, utilisateur, date) et le respect strict du format imposé.
+
+*archiver.py* (YERIMA Thierry – Spécialiste Système) : S'occupe de la compression des logs en .tar.gz, du déplacement des archives et de l'implémentation de la politique de rétention. Il effectue le contrôle de l'espace disque avant toute opération.
+
+*README.md* (AGNILLA Max – Documentation & QA) : Garant de la qualité finale et de la documentation technique. Responsable des tests d'intégration, de la validation des normes de codage (docstrings, shebang) et de la démonstration du projet.
