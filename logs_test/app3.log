@@ -1,8 +1,20 @@
-2024-04-01 11:00:00 INFO Service de paiement démarré
-2024-04-01 11:15:00 INFO Transaction reçue
-2024-04-01 11:30:00 WARN Montant élevé détecté
-2024-04-01 11:45:00 ERROR Paiement refusé par la banque
-2024-04-01 12:00:00 INFO Transaction validée
-2024-04-01 12:15:00 ERROR Paiement refusé par la banque
-2024-04-01 12:30:00 INFO Rapport journalier généré
+2024-04-01 12:00:00 INFO Service de paiement démarré
+2024-04-01 12:05:00 INFO Transaction reçue #001
+2024-04-01 12:10:00 INFO Transaction reçue #002
+2024-04-01 12:15:00 WARN Montant élevé détecté
+2024-04-01 12:20:00 ERROR Paiement refusé par la banque
+2024-04-01 12:25:00 INFO Transaction validée #001
+2024-04-01 12:30:00 INFO Transaction reçue #003
+2024-04-01 12:35:00 ERROR Paiement refusé par la banque
+2024-04-01 12:40:00 INFO Rapport journalier généré
 2024-04-01 12:45:00 WARN Connexion bancaire instable
+2024-04-01 12:50:00 INFO Transaction reçue #004
+2024-04-01 12:55:00 INFO Transaction validée #002
+2024-04-01 13:00:00 WARN Délai de traitement long
+2024-04-01 13:05:00 ERROR Paiement refusé par la banque
+2024-04-01 13:10:00 INFO Transaction reçue #005
+2024-04-01 13:15:00 INFO Transaction validée #003
+2024-04-01 13:20:00 WARN Limite de transaction approchée
+2024-04-01 13:25:00 INFO Service de paiement arrêté
+2024-04-01 13:30:00 INFO Sauvegarde des transactions
+2024-04-01 13:35:00 INFO Fin du service

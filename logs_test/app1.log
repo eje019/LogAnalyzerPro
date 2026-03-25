@@ -8,3 +8,13 @@
 2024-04-01 08:35:00 INFO Sauvegarde effectuée
 2024-04-01 08:40:00 ERROR Échec de connexion à la base de données
 2024-04-01 08:45:00 INFO Fin de la tâche
+2024-04-01 08:50:00 INFO Nettoyage des fichiers temporaires
+2024-04-01 08:55:00 WARN Connexion lente détectée
+2024-04-01 09:00:00 INFO Rapport journalier généré
+2024-04-01 09:05:00 INFO Vérification des mises à jour
+2024-04-01 09:10:00 ERROR Timeout lors de l'appel API
+2024-04-01 09:15:00 INFO Synchronisation des données
+2024-04-01 09:20:00 WARN Cache presque plein
+2024-04-01 09:25:00 INFO Envoi des notifications
+2024-04-01 09:30:00 ERROR Échec de connexion à la base de données
+2024-04-01 09:35:00 INFO Service en attente
