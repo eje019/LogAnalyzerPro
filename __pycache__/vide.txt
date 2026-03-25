@@ -1,1 +1,0 @@
-Pour pousser sur github tout dossier doit contenir quelque chose d'ou ce fichier texte

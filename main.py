@@ -38,7 +38,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         argv (Optional[List[str]]): Arguments à parser (par défaut: sys.argv).
 
     Returns:
-        argparse.Namespace: Structure contenant les arguments parsés.
+        argparse.Namespace: Structure contenant les arguments parses.
     """
 
     parser = argparse.ArgumentParser(
@@ -52,25 +52,25 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--niveau",
         default="ALL",
-        help="Niveau de filtrage: ERROR, WARN, INFO, ALL (défaut: ALL).",
+        help="Niveau de filtrage: ERROR, WARN, INFO, ALL (defaut: ALL).",
     )
     parser.add_argument(
         "--dest",
         default=None,
-        help="Dossier de destination pour déplacer l'archive (.tar.gz).",
+        help="Dossier de destination pour deplacer l'archive (.tar.gz).",
     )
     parser.add_argument(
         "--retention",
         type=int,
         default=30,
-        help="Nombre de jours de rétention pour supprimer les anciens rapports (défaut: 30).",
+        help="Nombre de jours de retention pour supprimer les anciens rapports (defaut: 30).",
     )
     return parser.parse_args(argv)
 
 
 def get_log_files(source_dir: str) -> List[str]:
     """
-    Récupère la liste des fichiers .log (chemins absolus) dans le dossier source.
+    Recupere la liste des fichiers .log (chemins absolus) dans le dossier source.
 
     Args:
         source_dir (str): Dossier source (chemin absolu).
